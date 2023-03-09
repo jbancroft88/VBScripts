@@ -1,0 +1,65 @@
+Sub ExcelToPDFAutoMailer()
+
+'Code by J Bancroft (March 2022)
+'
+'For the code to execute correctly, each sheet should be formatted as such:
+'Cell B19 should contain the Recipient Name
+'Cell B18 should contain the Recipient Email Address
+'Cell B17 should contain the Filename
+
+
+'Declare Variables
+Dim wSheet As Worksheet
+Dim fPrefix As String
+Dim fSuffix As String
+Dim fFilePath As String
+Dim fName As String
+Dim fEmailAddress As String
+
+'Start loop for all worksheets'
+For Each wSheet In ActiveWorkbook.Worksheets
+
+    'Activates the current worksheet'
+    Application.ScreenUpdating = False
+    wSheet.Activate
+    
+    'Parameters for script
+    fPrefix = "Export_"
+    fSuffix = Format(Date, "mmddyyyy")
+    fFilePath = "c:\test\" & fPrefix & Range("B17").Value & "_" & fSuffix
+    fName = Range("B19").Value
+    fEmailAddress = Range("B18").Value
+
+    'Exports worksheet to PDF File and saves to local computer
+    ActiveSheet.ExportAsFixedFormat Type:=xlTypePDF, Filename:=fFilePath
+
+    'Creates an Outlook item
+    Set OutApp = CreateObject("Outlook.Application")
+    Set OutMail = OutApp.CreateItem(0)
+
+    'Outlook message text'
+    strBody = "<FONT SIZE = 3>Dear " & fName & "," & "<br>" & "<br>" & "Please see attached."
+
+    'Sets Outlook parameters'
+    With OutMail
+        .Display
+        .To = fEmailAddress
+        .Subject = "VBA Test"
+        .HTMLBody = strBody & .HTMLBody
+        .Attachments.Add (fFilePath & ".pdf")
+        .Display
+        '(Remove apostrophe on the Send function below to send mail without Outlook window prompt)
+        '.Send
+    End With
+
+    Set OutMail = Nothing
+    Set OutApp = Nothing
+    Application.DisplayAlerts = False
+
+'Repeats for all worksheets until the end of the Excel file'
+Next wSheet
+
+End Sub
+
+
+
