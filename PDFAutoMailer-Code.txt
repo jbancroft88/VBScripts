@@ -8,7 +8,7 @@ Sub ExcelToPDFAutoMailer()
 'Cell B17 should contain the Filename
 
 
-'Declare Variables
+'Variables'
 Dim wSheet As Worksheet
 Dim fPrefix As String
 Dim fSuffix As String
@@ -16,28 +16,28 @@ Dim fFilePath As String
 Dim fName As String
 Dim fEmailAddress As String
 
-'Start loop for all worksheets'
+'Start loop for each worksheets'
 For Each wSheet In ActiveWorkbook.Worksheets
 
     'Activates the current worksheet'
     Application.ScreenUpdating = False
     wSheet.Activate
     
-    'Parameters for script
+    'Parameters for export
     fPrefix = "Export_"
     fSuffix = Format(Date, "mmddyyyy")
     fFilePath = "c:\test\" & fPrefix & Range("B17").Value & "_" & fSuffix
     fName = Range("B19").Value
     fEmailAddress = Range("B18").Value
 
-    'Exports worksheet to PDF File and saves to local computer
+    'Exports worksheet to PDF File and saves to local storage
     ActiveSheet.ExportAsFixedFormat Type:=xlTypePDF, Filename:=fFilePath
 
-    'Creates an Outlook item
+    'Creates an Outlook email
     Set OutApp = CreateObject("Outlook.Application")
     Set OutMail = OutApp.CreateItem(0)
 
-    'Outlook message text'
+    'Outlook message - this can be customised using HTML syntax'
     strBody = "<FONT SIZE = 3>Dear " & fName & "," & "<br>" & "<br>" & "Please see attached."
 
     'Sets Outlook parameters'
@@ -56,7 +56,7 @@ For Each wSheet In ActiveWorkbook.Worksheets
     Set OutApp = Nothing
     Application.DisplayAlerts = False
 
-'Repeats for all worksheets until the end of the Excel file'
+'Loop for all worksheets until the end of the Excel file'
 Next wSheet
 
 End Sub
