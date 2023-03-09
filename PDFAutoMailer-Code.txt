@@ -37,7 +37,7 @@ For Each wSheet In ActiveWorkbook.Worksheets
     Set OutApp = CreateObject("Outlook.Application")
     Set OutMail = OutApp.CreateItem(0)
 
-    'Outlook message - this can be customised using HTML syntax'
+    'Outlook message - this can be customised'
     strBody = "<FONT SIZE = 3>Dear " & fName & "," & "<br>" & "<br>" & "Please see attached."
 
     'Sets Outlook parameters'
